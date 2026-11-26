@@ -1,0 +1,15 @@
+{
+  "name": "lab2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "async.js",
+  "type": "module",
+  "scripts": {
+    "start": "node async.js",
+    "json": "node async2.js",
+    "dom": "node dom2.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

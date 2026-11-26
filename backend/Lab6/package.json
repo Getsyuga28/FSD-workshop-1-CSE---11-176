@@ -1,0 +1,21 @@
+{
+  "name": "lab6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "expressserver.js",
+  "type": "module",
+  "scripts": {
+    "start": "node expressserver.js",
+    "assignment": "node assignment.js",
+    "db": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.13.1"
+  }
+}

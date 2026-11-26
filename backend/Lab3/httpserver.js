@@ -1,0 +1,150 @@
+// import http from "http";
+
+// const server = http.createServer((req, res) => {
+//    res.write("Hello, World!");
+//     // res.writeHead(200, { "Content-Type": "text/plain" });
+//     // res.end("Hello, World!");
+//    const url = req.url;
+//    const method = req.method;
+//   if (url === "/msg") {
+//   res.write("This is the message endpoint");
+//   //res.end("This is the message endpoint");
+//  }
+ 
+//    res.end();
+// });
+
+// server.listen(3000, () => {
+//   console.log("Server running on port 3000");
+// });
+import http from 'http';
+const port = 3000;
+
+const users = [  
+    {   id: "1",
+        name: "Chandrahas",
+        phone: "7827536087",
+        email: "chandrahas@gmail.com"
+    },
+    {   id: "2",
+        name: "Common sanse",
+        phone: "7827536087",
+        email: "common@gmail.com"
+    },
+    {   id: "3",
+        name: "Aastik Rai",
+        phone: "7827536087",
+        email: "aastik@gmail.com"
+    },
+    {   id: "4",
+        name: "Aastik Rai",
+        phone: "7827536087",
+        email: "aastik@gmail.com"
+    }
+];
+
+const server = http.createServer(async (req, res) => {
+
+    const url = req.url;
+    const method = req.method;
+
+    
+    if (url === "/msg" && method === "GET") {
+
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/plain");
+
+        res.end("Hello World");
+    }
+
+  
+    else if (url === "/sys" && method === "GET") {
+
+        res.statusCode = 404;
+        res.setHeader("Content-Type", "text/plain");
+
+        res.end("Page not found");
+    }
+
+   
+    else if (url === "/users" && method === "GET") {
+
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+
+        res.end(JSON.stringify(users));
+    }
+    else if (url.startsWith("/users/") && method === "GET") {
+      const id=url.split("/")[2];
+      console.log(id);
+      const user=users.find((user)=>user.id===id);
+        if(!user){
+        return res.statusCode=404,res.end("User not found");
+        }
+        res.end(JSON.stringify(user));
+    }
+    
+    else if (url === "/create" && method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => {
+        body += chunk;
+    });
+
+    req.on("end", () => {
+         let data;
+         try {
+            data = JSON.parse(body);
+         } catch (err) {
+            res.statusCode = 400;
+            res.setHeader("Content-Type", "application/json");
+            return res.end(JSON.stringify({ message: "Invalid JSON" }));
+         }
+         const newUser = {
+            id: (Math.max(0, ...users.map((u) => Number(u.id))) + 1).toString(),
+            name: data.name,
+            phone: data.phone,
+            email: data.email
+         }
+         users.push(newUser);
+         res.statusCode = 201;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({
+            user: newUser
+        }));
+
+        // const newUser = JSON.parse(body);
+        // users.push(newUser);
+
+        // res.statusCode = 201;
+        // res.setHeader("Content-Type", "application/json");
+
+        // res.end(JSON.stringify({
+        //     user: newUser
+        // }));
+}
+    )}
+    else if(url.startsWith("/users/") && method === "DELETE"){
+      const id=url.split("/")[2];
+      const userIndex=users.findIndex((user)=>user.id===id);
+      if(userIndex === -1){
+        return res.statusCode=404,res.end("User not found");
+      }
+      users.splice(userIndex, 1);
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({
+        message: "User deleted successfully"
+      }));
+    }
+    else {
+
+        res.statusCode = 404;
+        res.setHeader("Content-Type", "text/plain");
+
+        res.end("Route not found");
+    }
+});
+
+server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
